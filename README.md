@@ -1,3 +1,9 @@
+---
+noteId: "4e1b86b0183a11edbf6cb989eabca02e"
+tags: []
+
+---
+
 ## AWS Terraform Secrets Manager Module
 
 The purpose of this repository is to provide [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html) as a [Terraform Module](https://www.terraform.io/language/modules/develop), in order to provision secrets from [sensitive variables](https://learn.hashicorp.com/tutorials/terraform/sensitive-variables), and to allow other AWS Resources to only access the specific secret. This module as part of the provisioning will also generate an specific [IAM Policy](https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_examples.html) to restrict the access.
@@ -14,6 +20,10 @@ Setting a Workspace in [Terraform Cloud](https://www.terraform.io/cloud-docs)
 - Variables
 
 ![](img/tf_workspace_vars.png)
+
+- Secret Value Provisioning as a [map](https://www.terraform.io/language/expressions/types#map)
+
+![](img/tf_secret_variable.png)
 
 - Created Resources
 
@@ -45,7 +55,14 @@ Setting a Workspace in [Terraform Cloud](https://www.terraform.io/cloud-docs)
 }
 ```
 
+- Secret value as Dictionary in AWS
+
+![](img/aws_secret_value.png)
+
+---
 **Note:** By using the `sensitive` flag in Terraform Cloud, such variable is safe in there, BUT once the plan is applied, everything will be stored in plain text in the state file, so depending where such state file is stored is quite important to take that into account, a minimum of [RBAC](https://www.terraform.io/cloud-docs/users-teams-organizations/permissions) access to state file if Terraform Cloud is used, or a restricted and encrypted S3 bucket if AWS backend is used, etc. At this current time, August 2022, there is still an open issue since 2014 about this concern, [github issue: Storing sensitive values in state files #516](https://github.com/hashicorp/terraform/issues/516)
+
+To cycle the secret, the variable needs to be recreated, as sensitive variables can't be updated, so a good practice is to put in the description when the secret was added and when should be replaced, as this simple approach doesn't use [rotation](https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how.html)
 
 For a more detailed usage of this approach of Secrets Manager on a ServerLess App, check the implementation in [aws-terraform-workspaces-serverless-example](https://github.com/leandro-mana/aws-terraform-workspaces-serverless-example) in the [Secret App](https://github.com/leandro-mana/aws-terraform-workspaces-serverless-example/blob/main/terraform/services/secret_app/main.tf) example.
 
